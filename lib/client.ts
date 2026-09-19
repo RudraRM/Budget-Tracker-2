@@ -3,7 +3,7 @@ export async function requestAI(payload: unknown) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
-    signal: AbortSignal.timeout(60000),
+    signal: AbortSignal.timeout(95000),
   });
   let data;
   try {
