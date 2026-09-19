@@ -814,7 +814,7 @@ import { z } from "zod";
 import { budgetSchema, goalSchema, monthly, parseJSON } from "@/lib/finance";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 90;
 const requestSchema = z.discriminatedUnion("mode", [
   z.object({
     mode: z.literal("chat"),
@@ -948,10 +948,10 @@ export async function POST(request: NextRequest) {
           model: nvidiaModel,
           messages,
           temperature: data.mode === "budget" ? 0.1 : 0.35,
-          max_tokens: data.mode === "budget" ? 2200 : 900,
+          max_tokens: data.mode === "budget" ? 1600 : 600,
           stream: false,
         }),
-        signal: AbortSignal.timeout(50000),
+        signal: AbortSignal.timeout(90000),
         cache: "no-store",
       },
     );
