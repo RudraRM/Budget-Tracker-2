@@ -69,11 +69,6 @@ try {
   await page
     .getByLabel("Your priorities & constraints")
     .fill("Build an emergency fund while keeping a realistic food budget.");
-  await page.getByRole("button", { name: "Generate budget" }).click();
-  await page
-    .getByRole("alert")
-    .filter({ hasText: "WORKSPACE_PASSWORD" })
-    .waitFor();
   const budget = {
     title: "Browser test budget",
     currency: "USD",

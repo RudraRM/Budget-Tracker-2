@@ -68,7 +68,6 @@ export default function Dashboard() {
     [budget, setBudget] = useState<Budget | null>(null),
     [goals, setGoals] = useState<Goals>(initialGoals);
   const [messages, setMessages] = useState<Message[]>([]),
-    [password, setPassword] = useState(""),
     [ready, setReady] = useState(false),
     [notice, setNotice] = useState("");
   const [month, setMonth] = useState(""),
@@ -237,16 +236,6 @@ export default function Dashboard() {
               </div>
             </div>
             <div className="settings-content">
-              <label className="field">
-                Workspace access password
-                <input
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter the password set by the owner"
-                />
-              </label>
               <label className="field">
                 Ledger currency
                 <select
@@ -542,18 +531,13 @@ export default function Dashboard() {
                     goals={goals}
                     setGoals={setGoals}
                     onBudget={setBudget}
-                    password={password}
                   />
                 )}
                 {index === 3 && (
                   <Planner rows={rows} goals={goals} setGoals={setGoals} />
                 )}
                 {index === 4 && (
-                  <Advisor
-                    password={password}
-                    messages={messages}
-                    setMessages={setMessages}
-                  />
+                  <Advisor messages={messages} setMessages={setMessages} />
                 )}
               </motion.div>
             ))}

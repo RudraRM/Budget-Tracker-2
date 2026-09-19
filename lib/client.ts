@@ -1,10 +1,7 @@
-export async function requestAI(payload: unknown, password: string) {
+export async function requestAI(payload: unknown) {
   const response = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(password ? { "x-workspace-password": password } : {}),
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
     signal: AbortSignal.timeout(60000),
   });

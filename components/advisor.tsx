@@ -5,11 +5,9 @@ import { Action, Busy } from "./ui";
 import { requestAI } from "@/lib/client";
 export type Message = { role: "user" | "assistant"; content: string };
 export function Advisor({
-  password,
   messages,
   setMessages,
 }: {
-  password: string;
   messages: Message[];
   setMessages: (value: Message[]) => void;
 }) {
@@ -30,10 +28,10 @@ export function Advisor({
     setBusy(true);
     setError("");
     try {
-      const response = await requestAI(
-        { mode: "chat", messages: next.slice(-19) },
-        password,
-      );
+      const response = await requestAI({
+        mode: "chat",
+        messages: next.slice(-19),
+      });
       if (typeof response.message !== "string")
         throw new Error("No answer was returned. Please retry.");
       setMessages([...next, { role: "assistant", content: response.message }]);

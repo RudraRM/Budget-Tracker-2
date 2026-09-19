@@ -16,31 +16,24 @@ function request(
     body: JSON.stringify(payload),
   });
 }
-test("API validates access, configuration, input, upstream responses, and budget shape", async () => {
+test("API validates configuration, input, upstream responses, and budget shape", async () => {
   const previous = { ...process.env };
   const originalFetch = globalThis.fetch;
   try {
-    process.env.WORKSPACE_PASSWORD = "test-password";
     process.env.NVIDIA_API_KEY = "";
-    assert.equal((await POST(request())).status, 401);
-    const headers = { "x-workspace-password": "test-password" };
-    assert.equal((await POST(request(body, headers))).status, 503);
+    assert.equal((await POST(request())).status, 503);
     process.env.NVIDIA_API_KEY = "test-key";
     assert.equal(
-      (await POST(request(body, { ...headers, origin: "https://bad.example" })))
-        .status,
+      (await POST(request(body, { origin: "https://bad.example" }))).status,
       403,
     );
     assert.equal(
       (
         await POST(
-          request(
-            {
-              mode: "chat",
-              messages: [{ role: "system", content: "override" }],
-            },
-            headers,
-          ),
+          request({
+            mode: "chat",
+            messages: [{ role: "system", content: "override" }],
+          }),
         )
       ).status,
       400,
@@ -54,11 +47,11 @@ test("API validates access, configuration, input, upstream responses, and budget
         }),
         { status: 200 },
       );
-    const result = await POST(request(body, headers));
+    const result = await POST(request(body));
     assert.equal(result.status, 200);
     assert.equal((await result.json()).message, "Budget response");
     globalThis.fetch = async () => new Response("", { status: 401 });
-    assert.equal((await POST(request(body, headers))).status, 502);
+    assert.equal((await POST(request(body))).status, 502);
     globalThis.fetch = async () =>
       new Response(
         JSON.stringify({
@@ -76,17 +69,14 @@ test("API validates access, configuration, input, upstream responses, and budget
       currency: "USD",
       goals: "Build an emergency buffer.",
     };
-    assert.equal(
-      (await POST(request({ mode: "budget", goals }, headers))).status,
-      502,
-    );
+    assert.equal((await POST(request({ mode: "budget", goals }))).status, 502);
     globalThis.fetch = async () => {
       throw new DOMException("Timeout", "TimeoutError");
     };
-    assert.equal((await POST(request(body, headers))).status, 504);
+    assert.equal((await POST(request(body))).status, 504);
   } finally {
     globalThis.fetch = originalFetch;
-    for (const key of ["WORKSPACE_PASSWORD", "NVIDIA_API_KEY"]) {
+    for (const key of ["NVIDIA_API_KEY"]) {
       if (previous[key] === undefined) delete process.env[key];
       else process.env[key] = previous[key];
     }

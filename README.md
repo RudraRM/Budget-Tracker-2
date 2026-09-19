@@ -12,7 +12,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Edit `.env.local` and enter your NVIDIA API key. The default model is `meta/llama-3.3-70b-instruct`. `NVIDIA_MODEL` can select another compatible NVIDIA chat-completion model. Llama Guard is a moderation model and is not used for budget generation. Restart the server after changing environment variables.
+Edit `.env.local` and enter your NVIDIA API key on the first line. The app uses a built-in NVIDIA chat-completion model, so no workspace password or extra env value is needed. Restart the server after changing environment variables.
 
 Open http://localhost:3000. In the Categorizer, use **Connect Puter** to sign in, paste statement text, consent to provider processing, then categorize and review the extracted rows. Puter AI usage belongs to the signed-in Puter account and may require credits. No Puter API key belongs in `.env.local`.
 
@@ -24,9 +24,9 @@ npm run build
 npm start
 ```
 
-Use a Node-capable Next.js host; this is not a static export. Set `NVIDIA_API_KEY`, `NVIDIA_MODEL`, and a strong `WORKSPACE_PASSWORD` in the host's server environment. Enter the workspace password through the dashboard's top-right connection settings. Production AI requests fail closed until a password is configured. Do not prefix secrets with `NEXT_PUBLIC_` or commit `.env.local`.
+Use a Node-capable Next.js host; this is not a static export. Set `NVIDIA_API_KEY` in the host's server environment. The app has a built-in NVIDIA model, so the only required env line is `NVIDIA_API_KEY=`. Do not prefix secrets with `NEXT_PUBLIC_` or commit `.env.local`.
 
-The access password protects the shared NVIDIA budget/chat endpoint; it is not a multi-user identity system. The dashboard's local ledger does not require server sign-in. This application is a personal workspace, with no bank connection, server database, billing, or cross-device sync. The in-process 20 requests/minute limit is a backstop, not a distributed rate limiter. Apply hosting-level rate limits and spending controls when exposing a shared deployment. Requests have bounded bodies, validated roles and payloads, a 50-second upstream timeout, and sanitized provider errors. Deploy behind HTTPS.
+The dashboard's local ledger does not require server sign-in. This application is a personal workspace, with no bank connection, server database, billing, or cross-device sync. The in-process 20 requests/minute limit is a backstop, not a distributed rate limiter. Apply hosting-level rate limits and spending controls when exposing a shared deployment. Requests have bounded bodies, validated roles and payloads, a 50-second upstream timeout, same-origin checks, and sanitized provider errors. Deploy behind HTTPS.
 
 ## Features
 
@@ -37,7 +37,7 @@ The access password protects the shared NVIDIA budget/chat endpoint; it is not a
 - Budget prompt builder with income, commitments, savings goal, horizon, and constraints. NVIDIA returns a schema-validated budget; income, currency, and fixed expense consistency are checked server-side.
 - Excel download: Summary, Income Streams, Fixed Expenses, Variable Expenses, Savings Targets. Numeric formats, column widths, filters, formula cells, cached totals, and frequency normalization are included. User strings are exported as text, not executable formulas.
 - Planner with computed deficits, category and subscription analysis, adjustable target/horizon, and savings milestones. Milestones are projections, not claimed achievements.
-- NVIDIA chat with visible errors and draft restoration after failures. Chat and password remain in memory.
+- NVIDIA chat with visible errors and draft restoration after failures. Chat remains in memory.
 - Versioned local persistence, JSON backup/restore, explicit data clearing, reduced-motion support, and responsive layouts.
 
 ## Data and calculation rules

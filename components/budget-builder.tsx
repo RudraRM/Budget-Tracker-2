@@ -17,13 +17,11 @@ export function BudgetBuilder({
   goals,
   setGoals,
   onBudget,
-  password,
 }: {
   budget: Budget | null;
   goals: Goals;
   setGoals: (value: Goals) => void;
   onBudget: (budget: Budget) => void;
-  password: string;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -39,10 +37,10 @@ export function BudgetBuilder({
     setBusy(true);
     setError("");
     try {
-      const response = await requestAI(
-        { mode: "budget", goals: validated.data },
-        password,
-      );
+      const response = await requestAI({
+        mode: "budget",
+        goals: validated.data,
+      });
       onBudget(budgetSchema.parse(response.budget));
     } catch (e) {
       setError(
